@@ -18,11 +18,11 @@ while True:
     if data.startswith(b"GET "):
         assert False, "NOT implemented GET"
     elif data.startswith(b"POST"):
-        assert("NOT implemented POST")
+        assert False, "NOT implemented POST"
     elif data.startswith("PUT"):
-       assert("NOT implemented PUT")
+       assert False, "NOT implemented PUT"
     elif data.startswith("DELETE"):
-        assert("NOT implemented DELETE")
+        assert False, "NOT implemented DELETE"
     else:
         print("NOT VALID http")
 
