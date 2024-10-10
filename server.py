@@ -4,48 +4,75 @@ import json
 import re
 
 
-ADDRESS, PORT = ("127.0.0.1", 8000)
+class Http_server():
+    def __init__(self, address="127.0.0.1", port=8000):
+        self.address=address
+        self.port=port
+        self.request = {}
+        self.response=""
+    def run(self):
+        server=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.bind((self.address, self.port))
+        server.listen()
+        print(f"Listening on {self.address}:{self.port}")
+        fd, client= server.accept()
+        print(f"received connection from {client}")
+        while True:
+            self.response={}
+            data = fd.recv(1024)
+            data=data.decode().strip().split(' ')
+            self.request = {"method": data[0], "path": data[1], "version": data[2]}
+            if self.request['version'] == "HTTP/1.1" or self.request['version']=='HTTP/1.0':
+                if self.request['method']=='GET':
+                    self.get_request(fd)
+                elif self.request['method']=='POST':
+                    self.post_request()
+                elif self.request['method']=='PUT':
+                    id=0 #must emplement asking for id here
+                    self.put_request(id=id)
+                elif self.request['method']=='DELETE':
+                    id=0
+                    self.delete_request(id)
+                else:
+                    assert False, "NOT valid HTTP request"
+            else:
+                self.unsupported_http_version()
+            
 
-request={}
+    
+    def get_request(self, fd):
+        if self.request['path']=='/':
+            header=b"HTTP/1.1 200 ok\r\n"
+            print(header)
+            fd.send(header)
+            
+        else:
+            self.error404()
+            
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((ADDRESS, PORT))
-server.listen()
-print(f"listening on: {ADDRESS}:{PORT}")
-fd, cleint = server.accept()
-print("the discriptor", cleint)
+    def post_request(self):
+        assert False, "NOT Implemented"
+    def put_request(self, id):
+        assert False, "NOT Implemented"
+    def delete_request(self, id):
+        assert False, "NOT Implemented"
+    def error404(self):
+        assert False, "not Implemented"
+    def unsupported_http_version(self):
+        print("==========================================")
+        print("Unsported HTTP version                  ")
+        print("We only support HTTP version 1.0 and 1.1")
+        print("For now we do not support HTTP/1.2      ")
+        print("but in the future we might!             ")
+        print("Thank you for understanding!            ")
+        print("==========================================")
+        exit(-1)
+    
 
-def get_request():
-    assert False, "NOT implemented GET"
-def unsupported_http_version():
-    print("==========================================")
-    print("Unsported HTTP version                  ")
-    print("We only support HTTP version 1.0 and 1.1")
-    print("For now we do not support HTTP/1.2      ")
-    print("but in the future we might!             ")
-    print("Thank you for understanding!            ")
-    print("==========================================")
-    exit(-1)
 
 
-while True:
-    data = fd.recv(1024)
-    recv_len=len(data)
-    data = data.decode().strip().split(' ')
-    request= {'method':data[0], 'path': data[1], 'version': data[2]}
-    print(request)
-    if request['version'] != "HTTP/1.0" or request['version'] != "HTTP/1.1":
-        print(request['version'])
-        unsupported_http_version()
- 
-    elif  request['method'] =="GET":
-        get_request()
-    elif request['method'] == "POST":
-        assert False, "NOT implemented POST"
-    elif request['method']=="PUT":
-       assert False, "NOT implemented PUT"
-    elif request['method']=='DELETE':
-        assert False, "NOT implemented DELETE"
-    else:
-        print("NOT VALID http")
 
+
+if __name__=="__main__":
+    server=Http_server(port=5000)
+    server.run()
