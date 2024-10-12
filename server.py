@@ -71,13 +71,15 @@ class Http_server():
             
 
     def post_request(self):
+        if self.request['path']=="/":
+            print("path: ", request['path'])
         assert False, "NOT Implemented"
     def put_request(self, id):
         assert False, "NOT Implemented"
     def delete_request(self, id):
         assert False, "NOT Implemented"
     def error404(self, fd):
-        body= b"<h>PAGE NOT FOUND</h1>"
+        body= b"<h1>PAGE NOT FOUND</h1>"
         content_len=len(body)
         header=b"HTTP/1.1 404 Not Found\r\n"
         header+=f"Host: {self.address}\r\n".encode('utf-8')
