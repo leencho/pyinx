@@ -70,32 +70,16 @@ class Http_server():
 
             
 
-    def post_request(self, fd):
-        body = {"value1": 0, "value2": 1, "value3": 2, "value4": 3}
-        json_data = json.dumps(body, indent=4)
-        if self.request['path'] == '/':
-            with open("file.json", "w") as file:
-                file.write(json_data)
-            header=b"HTTP/1.1 200 ok\r\n"
-            header+=f"Host: {self.address}\r\n".encode('utf-8')
-            header +=b'Content-type: application/json\r\n'
-            content_len=len(body)
-            header += f"Content-Length: {content_len}\r\n".encode('utf-8')
-            header += b"\r\n"
-            json_data = json_data.encode('utf-8')
-            header += json_data
-            fd.send(header)
-
-
-
-
-        
+    def post_request(self):
+        if self.request['path']=="/":
+            print("path: ", request['path'])
+        assert False, "NOT Implemented"
     def put_request(self, id):
         assert False, "NOT Implemented"
     def delete_request(self, id):
         assert False, "NOT Implemented"
     def error404(self, fd):
-        body= b"<h>PAGE NOT FOUND</h1>"
+        body= b"<h1>PAGE NOT FOUND</h1>"
         content_len=len(body)
         header=b"HTTP/1.1 404 Not Found\r\n"
         header+=f"Host: {self.address}\r\n".encode('utf-8')
