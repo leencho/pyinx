@@ -22,7 +22,7 @@ class Http_server():
             data = data.decode()
             data=data.split()
             #data=data.strip().split(' ')
-            print(data)
+            #print(data)
             if not data:
                 self.unsupported_http_version()
             self.request = {"method": data[0], "path": data[1], "version": data[2]}
@@ -30,7 +30,7 @@ class Http_server():
                 if self.request['method']=='GET':
                     self.get_request(fd)
                 elif self.request['method']=='POST':
-                    self.post_request()
+                    self.post_request(fd)
                 elif self.request['method']=='PUT':
                     id=0 #must emplement asking for id here
                     self.put_request(id=id)
@@ -70,8 +70,26 @@ class Http_server():
 
             
 
-    def post_request(self):
-        assert False, "NOT Implemented"
+    def post_request(self, fd):
+        body = {"value1": 0, "value2": 1, "value3": 2, "value4": 3}
+        json_data = json.dumps(body, indent=4)
+        if self.request['path'] == '/':
+            with open("file.json", "w") as file:
+                file.write(json_data)
+            header=b"HTTP/1.1 200 ok\r\n"
+            header+=f"Host: {self.address}\r\n".encode('utf-8')
+            header +=b'Content-type: application/json\r\n'
+            content_len=len(body)
+            header += f"Content-Length: {content_len}\r\n".encode('utf-8')
+            header += b"\r\n"
+            json_data = json_data.encode('utf-8')
+            header += json_data
+            fd.send(header)
+
+
+
+
+        
     def put_request(self, id):
         assert False, "NOT Implemented"
     def delete_request(self, id):
